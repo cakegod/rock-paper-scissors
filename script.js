@@ -1,51 +1,77 @@
-//Variables to keep computer & player score
 let computerScore = 0;
 let playerScore = 0;
-let rounds;
 
-// Loop until either computer or player reaches score 5
-for (rounds = 0; rounds < 5; rounds++) {
+const score = document.querySelector(".score");
+const winLose = document.querySelector(".win-lose");
+const buttonWrapper = document.querySelector(".button-wrapper");
+const rock = document.querySelector("#rock");
+const paper = document.querySelector("#paper");
+const scissors = document.querySelector("#scissors");
 
-    // Player inputs his choice, lowercase to make it case-insensitive
-    let playerSelection = prompt("rock, paper or scissors?").toLowerCase();
-    // Computer choses randomly a word from the array
-    function computerPlay() {
-        const choices = ['rock', 'paper', 'scissors']
-        return choices[Math.floor(Math.random() * choices.length)]
-    }
-    // Save the random word into a variable
-    let computerSelection = computerPlay();
-    // Calls function
-    playRound(playerSelection, computerSelection);
+rock.addEventListener("click", () => { playerSelection = "Rock"; playRound(computerPlay(), playerSelection); });
+paper.addEventListener("click", () => { playerSelection = "Paper"; playRound(computerPlay(), playerSelection); });
+scissors.addEventListener("click", () => { playerSelection = "Scissors"; playRound(computerPlay(), playerSelection); });
+
+function computerPlay() {
+    const choices = ["Rock", "Paper", "Scissors"];
+    return choices[Math.floor(Math.random() * choices.length)];
 }
 
-// Alerts after 5 rounds
-if (rounds === 5 && playerScore == computerScore) {
-    alert("DRAW!");
-} else if (rounds === 5 && playerScore > computerScore) {
-    alert("WIN!");
-} else if (rounds === 5 && playerScore < computerScore)
-    alert("GAME OVER!");
-
-// Plays one round
 function playRound(computerSelection, playerSelection) {
     if (playerSelection == computerSelection) {
-        alert("It's a draw!");
-        alert("Player's score " + playerScore + " Computer's score " + computerScore);
-    } else if ((playerSelection == "paper" && computerSelection == "rock") ||
-        (playerSelection == "scissors" && computerSelection == "paper") ||
-        (playerSelection == "rock" && computerSelection == "scissors")) {
+        score.textContent = `YOU: ${playerScore} CPU: ${computerScore}`;
+        winLose.textContent = "Draw!";
+    } else if ((playerSelection == "Paper" && computerSelection == "Rock") ||
+        (playerSelection == "Scissors" && computerSelection == "Paper") ||
+        (playerSelection == "Rock" && computerSelection == "Scissors")) {
         playerScore++;
-        alert("You win! " + playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1) + " beats " + computerSelection + ".");
-        alert("Player's score " + playerScore + " Computer's score " + computerScore);
-    } else if ((playerSelection == "scissors" && computerSelection == "rock") ||
-        (playerSelection == "rock" && computerSelection == "paper") ||
-        (playerSelection == "paper" && computerSelection == "scissors")) {
+        score.textContent = `YOU: ${playerScore} CPU: ${computerScore}`;
+        winLose.textContent = `You win! ${playerSelection} beats ${computerSelection}.`;
+        scoreChecker();
+    } else if ((playerSelection == "Scissors" && computerSelection == "Rock") ||
+        (playerSelection == "Rock" && computerSelection == "Paper") ||
+        (playerSelection == "Paper" && computerSelection == "Scissors")) {
         computerScore++;
-        alert("You lose! " + playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1) + " beats " + computerSelection + ".");
-        alert("Player's score " + playerScore + " Computer's score " + computerScore);
-
+        score.textContent = `YOU: ${playerScore} CPU: ${computerScore}`;
+        winLose.textContent = `You lose! ${playerSelection} beats ${computerSelection}.`;
+        scoreChecker();
     }
+}
+
+function scoreChecker() {
+    if (playerScore == 5) {
+        winLose.textContent = "YOU WIN!";
+        rock.disabled = true;
+        paper.disabled = true;
+        scissors.disabled = true;
+        reset();
+    } else if (computerScore == 5) {
+        winLose.textContent = "YOU LOSE!";
+        rock.disabled = true;
+        paper.disabled = true;
+        scissors.disabled = true;
+        reset();
+    } else {
+        // nothing
+    }
+}
+
+function reset() {
+    let resetButton = document.createElement("button");
+    resetButton.textContent = "Reset";
+    resetButton.type = "button";
+    resetButton.className = "reset";
+    buttonWrapper.appendChild(resetButton);
+    resetButton.addEventListener("click", () => {
+        computerScore = 0;
+        playerScore = 0;
+        winLose.textContent = "";
+        score.textContent = "";
+        resetButton.remove();
+        rock.disabled = false;
+        paper.disabled = false;
+        scissors.disabled = false;
+    });
 
 }
 
